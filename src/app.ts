@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
+import { registerUserConttroller } from "./http/controllers/register.controller";
 
 export const app = fastify();
 
-const prisma = new PrismaClient();
+app.post("/users", registerUserConttroller);
