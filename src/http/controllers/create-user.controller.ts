@@ -1,39 +1,29 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { prisma } from "../../lib/prisma";
-import { hash } from "bcryptjs";
+import { CreateUserUseCase } from "../../use-cases/create-user-use-case";
 
-export async function createUserController(
-  req: FastifyRequest,
-  res: FastifyReply
-): Promise<void> {
-  const requestBodySchema = z.object({
-    name: z.string(),
-    email: z.string().email(),
-    password: z.string().min(6),
-  });
+export class CreateUserController {
+  private createUserUseCase: CreateUserUseCase;
 
-  const { name, email, password } = requestBodySchema.parse(req.body);
-
-  const userAlreadyExists = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-
-  if (userAlreadyExists) {
-    return res.status(409).send();
+  constructor(createUserUseCase: CreateUserUseCase) {
+    this.createUserUseCase = createUserUseCase;
   }
 
-  const password_hash = await hash(password, 6);
+  execute = async (req: FastifyRequest, res: FastifyReply): Promise<void> => {
+    const requestBodySchema = z.object({
+      name: z.string(),
+      email: z.string().email(),
+      password: z.string().min(6),
+    });
 
-  const result = await prisma.user.create({
-    data: {
+    const { name, email, password } = requestBodySchema.parse(req.body);
+
+    const result = await this.createUserUseCase.execute({
       name,
       email,
-      password_hash,
-    },
-  });
+      password,
+    });
 
-  return res.status(201).send();
+    return res.status(201).send();
+  };
 }
