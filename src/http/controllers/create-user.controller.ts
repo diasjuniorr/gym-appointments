@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 import { hash } from "bcryptjs";
 
-export async function registerUserConttroller(
+export async function createUserController(
   req: FastifyRequest,
   res: FastifyReply
 ): Promise<void> {

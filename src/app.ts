@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import { registerUserConttroller } from "./http/controllers/register.controller";
+import { registerUserConttroller } from "./http/controllers/create-user.controller";
 
 export const app = fastify();
 
