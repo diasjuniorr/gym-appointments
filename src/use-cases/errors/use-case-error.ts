@@ -12,3 +12,9 @@ export class UnknownUseCaseError extends UseCaseError {
     super(msg, 500);
   }
 }
+
+export class UserAlreadyExistsError extends UseCaseError {
+  constructor() {
+    super("user already exists", 409);
+  }
+}

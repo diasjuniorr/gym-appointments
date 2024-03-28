@@ -1,10 +1,13 @@
 import { hash } from "bcryptjs";
-import { IUsersRepisitory, User } from "../contracts/users-repository";
-import { Either, left, right } from "../../types/either";
-import { UserAlreadyExistsError } from "./errors";
-import { UnknownUseCaseError, UseCaseError } from "../errors/use-case-error";
+import { IUsersRepisitory, User } from "./contracts/users-repository";
+import { Either, left, right } from "../types/either";
+import {
+  UnknownUseCaseError,
+  UseCaseError,
+  UserAlreadyExistsError,
+} from "./errors/use-case-error";
 
-type CreateUserUseCaseResponse = Either<UseCaseError, { user: { id: string } }>;
+type CreateUserUseCaseResponse = Either<UseCaseError, { user: User }>;
 export interface CreateUserUseCaseRequest {
   name: string;
   email: string;
@@ -41,6 +44,6 @@ export class CreateUserUseCase {
       return left(new UnknownUseCaseError(resultCreatingUser.value.message));
     }
 
-    return right({ user: { id: resultCreatingUser.value.user.id } });
+    return right({ ...resultCreatingUser.value });
   }
 }

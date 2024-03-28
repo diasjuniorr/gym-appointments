@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { CreateUserUseCase } from "../../use-cases/create-user-use-case";
-import { UserAlreadyExistsError } from "../../use-cases/create-user-use-case/errors";
 
 export class CreateUserController {
   private createUserUseCase: CreateUserUseCase;
@@ -38,6 +37,6 @@ export class CreateUserController {
         .send({ reason: result.value.message });
     }
 
-    return res.status(201).send({ ...result.value });
+    return res.status(201).send({ user: { id: result.value.user.id } });
   };
 }

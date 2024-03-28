@@ -3,8 +3,8 @@ import {
   CreateUserRepositoryInput,
   IUsersRepisitory,
   UsersRepositoryCreateUserResponse,
-} from "../../use-cases/contracts/users-repository";
-import { left, right } from "../../types/either";
+} from "../use-cases/contracts/users-repository";
+import { left, right } from "../types/either";
 
 export class UsersRepisitory implements IUsersRepisitory {
   private db: PrismaClient;
