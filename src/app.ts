@@ -1,13 +1,15 @@
 import fastify from "fastify";
-import { CreateUserController } from "./http/controllers/create-user.controller";
-import { prisma } from "./lib/prisma";
-import { UsersRepisitory } from "./repositories/users-repository";
-import { CreateUserUseCase } from "./use-cases/create-user-use-case";
+import { ZodError } from "zod";
+import { setupRoutes } from "./http/routes";
 
 export const app = fastify();
 
-const usersRepository = new UsersRepisitory(prisma);
-const createUserUseCase = new CreateUserUseCase(usersRepository);
-const createUserController = new CreateUserController(createUserUseCase);
+app.register(setupRoutes);
 
-app.post("/users", createUserController.execute);
+app.setErrorHandler((error, _req, res) => {
+  if (error instanceof ZodError) {
+    res.status(400).send({ reason: error.errors });
+  }
+
+  res.status(500).send({ reason: "internal server error" });
+});
