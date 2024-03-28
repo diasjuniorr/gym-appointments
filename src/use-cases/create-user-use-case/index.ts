@@ -1,6 +1,10 @@
 import { hash } from "bcryptjs";
-import { IUsersRepisitory } from "../contracts/users-repository";
+import { IUsersRepisitory, User } from "../contracts/users-repository";
+import { Either, left, right } from "../../types/either";
+import { UserAlreadyExistsError } from "./errors";
+import { UnknownUseCaseError, UseCaseError } from "../errors/use-case-error";
 
+type CreateUserUseCaseResponse = Either<UseCaseError, { user: User }>;
 export interface CreateUserUseCaseRequest {
   name: string;
   email: string;
@@ -14,15 +18,29 @@ export class CreateUserUseCase {
     this.usersRepository = usersRepository;
   }
 
-  async execute({ name, email, password }: CreateUserUseCaseRequest) {
+  async execute({
+    name,
+    email,
+    password,
+  }: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (userAlreadyExists) {
-      throw new Error("user already exists");
+      return left(new UserAlreadyExistsError());
     }
 
     const password_hash = await hash(password, 6);
 
-    return await this.usersRepository.create({ name, email, password_hash });
+    const resultCreatingUser = await this.usersRepository.create({
+      name,
+      email,
+      password_hash,
+    });
+
+    if (resultCreatingUser.isLeft()) {
+      return left(new UnknownUseCaseError(resultCreatingUser.value.message));
+    }
+
+    return right({ ...resultCreatingUser.value });
   }
 }

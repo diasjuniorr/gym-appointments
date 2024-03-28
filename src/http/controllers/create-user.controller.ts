@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { CreateUserUseCase } from "../../use-cases/create-user-use-case";
+import { UserAlreadyExistsError } from "../../use-cases/create-user-use-case/errors";
 
 export class CreateUserController {
   private createUserUseCase: CreateUserUseCase;
@@ -24,6 +25,19 @@ export class CreateUserController {
       password,
     });
 
-    return res.status(201).send();
+    if (result.isLeft()) {
+      if (result.value.code === 500) {
+        console.error(result.value.message);
+        return res
+          .status(result.value.code)
+          .send({ reason: "internal server error" });
+      }
+
+      return res
+        .status(result.value.code)
+        .send({ reason: result.value.message });
+    }
+
+    return res.status(201).send({ ...result.value });
   };
 }
