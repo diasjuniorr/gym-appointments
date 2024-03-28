@@ -4,7 +4,7 @@ import { Either, left, right } from "../../types/either";
 import { UserAlreadyExistsError } from "./errors";
 import { UnknownUseCaseError, UseCaseError } from "../errors/use-case-error";
 
-type CreateUserUseCaseResponse = Either<UseCaseError, { user: User }>;
+type CreateUserUseCaseResponse = Either<UseCaseError, { user: { id: string } }>;
 export interface CreateUserUseCaseRequest {
   name: string;
   email: string;
@@ -41,6 +41,6 @@ export class CreateUserUseCase {
       return left(new UnknownUseCaseError(resultCreatingUser.value.message));
     }
 
-    return right({ ...resultCreatingUser.value });
+    return right({ user: { id: resultCreatingUser.value.user.id } });
   }
 }
