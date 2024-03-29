@@ -4,6 +4,7 @@ import {
   IUsersRepository,
   UsersRepositoryCreateUserResponse,
   UsersRepositoryFindByEmailResponse,
+  UsersRepositoryFindByIdResponse,
 } from "../use-cases/contracts/users-repository";
 import { left, right } from "../types/either";
 
@@ -45,6 +46,17 @@ export class UsersRepisitory implements IUsersRepository {
     } catch (error) {
       console.log("error finding user by email");
       return left(new Error(`error finding user by email: ${error}`));
+    }
+  }
+
+  async findById(id: string): Promise<UsersRepositoryFindByIdResponse> {
+    try {
+      const result = await this.db.user.findUnique({ where: { id } });
+
+      return right(result);
+    } catch (error) {
+      console.log("error finding user by id");
+      return left(new Error(`error finding user by id: ${error}`));
     }
   }
 }

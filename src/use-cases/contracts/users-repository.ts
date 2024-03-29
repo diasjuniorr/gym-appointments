@@ -16,10 +16,12 @@ export interface CreateUserRepositoryInput {
 
 export type UsersRepositoryCreateUserResponse = Either<Error, User>;
 export type UsersRepositoryFindByEmailResponse = Either<Error, User | null>;
+export type UsersRepositoryFindByIdResponse = Either<Error, User | null>;
 
 export interface IUsersRepository {
   create(
     props: CreateUserRepositoryInput
   ): Promise<UsersRepositoryCreateUserResponse>;
   findByEmail(email: string): Promise<UsersRepositoryFindByEmailResponse>;
+  findById(id: string): Promise<UsersRepositoryFindByIdResponse>;
 }

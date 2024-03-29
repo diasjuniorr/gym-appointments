@@ -1,19 +1,21 @@
 import { right } from "../../types/either";
 import {
-  IUsersRepisitory,
+  CreateUserRepositoryInput,
+  IUsersRepository,
   User,
   UsersRepositoryCreateUserResponse,
   UsersRepositoryFindByEmailResponse,
+  UsersRepositoryFindByIdResponse,
 } from "../../use-cases/contracts/users-repository";
 
-export class InMemoryUsersRepository implements IUsersRepisitory {
+export class InMemoryUsersRepository implements IUsersRepository {
   public users: User[] = [];
 
   async create({
     name,
     email,
     password_hash,
-  }: User): Promise<UsersRepositoryCreateUserResponse> {
+  }: CreateUserRepositoryInput): Promise<UsersRepositoryCreateUserResponse> {
     const user = {
       id: "any_id",
       name,
@@ -31,6 +33,16 @@ export class InMemoryUsersRepository implements IUsersRepisitory {
     email: string
   ): Promise<UsersRepositoryFindByEmailResponse> {
     const user = this.users.find((user) => user.email === email);
+
+    if (!user) {
+      return right(null);
+    }
+
+    return right(user);
+  }
+
+  async findById(id: string): Promise<UsersRepositoryFindByIdResponse> {
+    const user = this.users.find((user) => user.id === id);
 
     if (!user) {
       return right(null);

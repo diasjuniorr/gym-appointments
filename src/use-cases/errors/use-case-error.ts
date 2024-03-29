@@ -19,6 +19,12 @@ export class UserAlreadyExistsError extends UseCaseError {
   }
 }
 
+export class UserNotFoundError extends UseCaseError {
+  constructor() {
+    super("user not found", 404);
+  }
+}
+
 export class InvalidCredentialsError extends UseCaseError {
   constructor() {
     super("invalid credentials", 401);
