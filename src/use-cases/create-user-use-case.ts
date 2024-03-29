@@ -26,9 +26,17 @@ export class CreateUserUseCase {
     email,
     password,
   }: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
-    const userAlreadyExists = await this.usersRepository.findByEmail(email);
+    const userAlreadyExistsResult = await this.usersRepository.findByEmail(
+      email
+    );
 
-    if (userAlreadyExists) {
+    if (userAlreadyExistsResult.isLeft()) {
+      return left(
+        new UnknownUseCaseError(userAlreadyExistsResult.value.message)
+      );
+    }
+
+    if (userAlreadyExistsResult.value) {
       return left(new UserAlreadyExistsError());
     }
 
@@ -44,6 +52,6 @@ export class CreateUserUseCase {
       return left(new UnknownUseCaseError(resultCreatingUser.value.message));
     }
 
-    return right({ ...resultCreatingUser.value });
+    return right({ user: resultCreatingUser.value });
   }
 }

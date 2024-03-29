@@ -3,6 +3,7 @@ import {
   IUsersRepisitory,
   User,
   UsersRepositoryCreateUserResponse,
+  UsersRepositoryFindByEmailResponse,
 } from "../../use-cases/contracts/users-repository";
 
 export class InMemoryUsersRepository implements IUsersRepisitory {
@@ -23,16 +24,18 @@ export class InMemoryUsersRepository implements IUsersRepisitory {
 
     this.users.push(user);
 
-    return right({ user });
+    return right(user);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(
+    email: string
+  ): Promise<UsersRepositoryFindByEmailResponse> {
     const user = this.users.find((user) => user.email === email);
 
     if (!user) {
-      return null;
+      return right(null);
     }
 
-    return user;
+    return right(user);
   }
 }

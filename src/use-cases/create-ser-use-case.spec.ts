@@ -26,6 +26,7 @@ describe("CreateUserUseCase", () => {
     if (response.isLeft()) return;
     expect(response.value.user.id).toBeDefined();
   });
+
   it("should generate a hash for the user password", async () => {
     const password = "any_password";
     const response = await sut.execute({

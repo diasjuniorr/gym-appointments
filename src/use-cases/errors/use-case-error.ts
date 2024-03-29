@@ -18,3 +18,9 @@ export class UserAlreadyExistsError extends UseCaseError {
     super("user already exists", 409);
   }
 }
+
+export class InvalidCredentialsError extends UseCaseError {
+  constructor() {
+    super("invalid credentials", 401);
+  }
+}

@@ -14,11 +14,12 @@ export interface CreateUserRepositoryInput {
   password_hash: string;
 }
 
-export type UsersRepositoryCreateUserResponse = Either<Error, { user: User }>;
+export type UsersRepositoryCreateUserResponse = Either<Error, User>;
+export type UsersRepositoryFindByEmailResponse = Either<Error, User | null>;
 
 export interface IUsersRepisitory {
   create(
     props: CreateUserRepositoryInput
   ): Promise<UsersRepositoryCreateUserResponse>;
-  findByEmail(email: string): Promise<User | null>;
+  findByEmail(email: string): Promise<UsersRepositoryFindByEmailResponse>;
 }
