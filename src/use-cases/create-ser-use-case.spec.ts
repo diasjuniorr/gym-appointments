@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CreateUserUseCase } from "./create-user-use-case";
-import { IUsersRepisitory } from "./contracts/users-repository";
 import { InMemoryUsersRepository } from "../repositories/in-mermoy/in-memory-users-repository";
 import { compare } from "bcryptjs";
 import { UserAlreadyExistsError } from "./errors/use-case-error";
+import { IUsersRepository } from "./contracts/users-repository";
 
-let inMemoryUsersRepository: IUsersRepisitory;
+let inMemoryUsersRepository: IUsersRepository;
 let sut: CreateUserUseCase;
 
 describe("CreateUserUseCase", () => {

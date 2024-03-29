@@ -1,10 +1,10 @@
 import { describe, it, beforeEach, expect } from "vitest";
-import { IUsersRepisitory } from "./contracts/users-repository";
 import { AuthenticateUseCase } from "./authenticate-use-case";
 import { InMemoryUsersRepository } from "../repositories/in-mermoy/in-memory-users-repository";
 import { hash } from "bcryptjs";
+import { IUsersRepository } from "./contracts/users-repository";
 
-let inMemoryUserRepository: IUsersRepisitory;
+let inMemoryUserRepository: IUsersRepository;
 let sut: AuthenticateUseCase;
 
 describe("AuthenticateUseCase", () => {
@@ -28,5 +28,14 @@ describe("AuthenticateUseCase", () => {
     });
 
     expect(response.isRight()).toBe(true);
+  });
+
+  it("should not authenticate a user with invalid credentials", async () => {
+    const response = await sut.execute({
+      email: "email",
+      password: "invalid_password",
+    });
+
+    expect(response.isLeft()).toBe(true);
   });
 });

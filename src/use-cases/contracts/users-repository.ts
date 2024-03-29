@@ -17,7 +17,7 @@ export interface CreateUserRepositoryInput {
 export type UsersRepositoryCreateUserResponse = Either<Error, User>;
 export type UsersRepositoryFindByEmailResponse = Either<Error, User | null>;
 
-export interface IUsersRepisitory {
+export interface IUsersRepository {
   create(
     props: CreateUserRepositoryInput
   ): Promise<UsersRepositoryCreateUserResponse>;

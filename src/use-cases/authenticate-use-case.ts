@@ -1,11 +1,11 @@
 import { compare } from "bcryptjs";
 import { Either, left, right } from "../types/either";
-import { IUsersRepisitory } from "./contracts/users-repository";
 import {
   InvalidCredentialsError,
   UnknownUseCaseError,
   UseCaseError,
 } from "./errors/use-case-error";
+import { IUsersRepository } from "./contracts/users-repository";
 
 export type AuthenticateUseCaseResponse = Either<UseCaseError, null>;
 
@@ -15,13 +15,16 @@ export interface AuthenticateUseCaseRequest {
 }
 
 export class AuthenticateUseCase {
-  private usersRepository: IUsersRepisitory;
+  private usersRepository: IUsersRepository;
 
-  constructor(usersRepository: IUsersRepisitory) {
+  constructor(usersRepository: IUsersRepository) {
     this.usersRepository = usersRepository;
   }
 
-  async execute({ email, password }: AuthenticateUseCaseRequest) {
+  async execute({
+    email,
+    password,
+  }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const userExists = await this.usersRepository.findByEmail(email);
 
     if (userExists.isLeft()) {
@@ -32,7 +35,10 @@ export class AuthenticateUseCase {
       return left(new InvalidCredentialsError());
     }
 
-    const passwordMatches = compare(password, userExists.value.password_hash);
+    const passwordMatches = await compare(
+      password,
+      userExists.value.password_hash
+    );
 
     if (!passwordMatches) {
       return left(new InvalidCredentialsError());

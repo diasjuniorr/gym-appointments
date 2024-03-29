@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import {
   CreateUserRepositoryInput,
-  IUsersRepisitory,
+  IUsersRepository,
   UsersRepositoryCreateUserResponse,
+  UsersRepositoryFindByEmailResponse,
 } from "../use-cases/contracts/users-repository";
 import { left, right } from "../types/either";
 
-export class UsersRepisitory implements IUsersRepisitory {
+export class UsersRepisitory implements IUsersRepository {
   private db: PrismaClient;
 
   constructor(db: PrismaClient) {
@@ -27,14 +28,23 @@ export class UsersRepisitory implements IUsersRepisitory {
         },
       });
 
-      return right({ user });
+      return right(user);
     } catch (error) {
       console.log("error creating user");
       return left(new Error(`error creating user: ${error}`));
     }
   }
 
-  async findByEmail(email: string) {
-    return await this.db.user.findUnique({ where: { email } });
+  async findByEmail(
+    email: string
+  ): Promise<UsersRepositoryFindByEmailResponse> {
+    try {
+      const result = await this.db.user.findUnique({ where: { email } });
+
+      return right(result);
+    } catch (error) {
+      console.log("error finding user by email");
+      return left(new Error(`error finding user by email: ${error}`));
+    }
   }
 }

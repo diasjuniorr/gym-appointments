@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs";
-import { IUsersRepisitory, User } from "./contracts/users-repository";
+import { IUsersRepository, User } from "./contracts/users-repository";
 import { Either, left, right } from "../types/either";
 import {
   UnknownUseCaseError,
@@ -15,9 +15,9 @@ export interface CreateUserUseCaseRequest {
 }
 
 export class CreateUserUseCase {
-  private usersRepository: IUsersRepisitory;
+  private usersRepository: IUsersRepository;
 
-  constructor(usersRepository: IUsersRepisitory) {
+  constructor(usersRepository: IUsersRepository) {
     this.usersRepository = usersRepository;
   }
 
