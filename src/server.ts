@@ -7,5 +7,5 @@ app
     port: env.PORT,
   })
   .then(() => {
-    console.log(`Server is running on ${app.server.address()}`);
+    console.log(`Server is running on 0.0.0.0:${env.PORT}`);
   });
